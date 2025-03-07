@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                     return;
                 }
 
-                modalProfileImg.src = `${user.image}`
+                modalProfileImg.src = `${user.image  || 'https://www.gravatar.com/avatar/?d=mp'}`
                 modalUsername.innerText = `@${user.username}`;
                 modalName.innerText = `${user.firstName.concat(" ", user.lastName)}`;
                 modalEmail.innerText = user.email;
@@ -108,7 +108,10 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const postComments = Object.values(comments).filter(comment => comment.postId === post.id);
     
                 postElement.innerHTML = `
-                    <a href="#" class="username" data-userid="${post.userId}">@${user.username}</a>
+                    <div class="post-author">
+                        <img class="comment-profile-img" src="${user.image} alt="Profile image of post author.">
+                        <a href="#" class="username" data-userid="${post.userId}">@${user.username}</a>
+                    </div>
                     <h2>${post.title}</h2>
                     <p class="post-body">${post.body}</p>
                     <div class="tags-react-grid">
@@ -121,18 +124,23 @@ document.addEventListener("DOMContentLoaded", async function() {
                     <p class="comments-title"><strong>Comments</strong></p>
                     <div class="comments-div">
                         ${postComments.length ?
-                            postComments.map(comment => `
-                                <div class="comment">
-                                    <p class="username" data-userid="${comment.user.id}">${comment.user.username}</p>
-                                    <p>${comment.body}</p>
-                                </div>
-                                `).join('')
-                                : `
-                                <div class="comment">
+                            postComments.map(comment => {
+                                const commentUser = users[comment.user.id] || { username: "Unknown user" };
+                                return `
+                                    <div class="comment">
+                                        <img class="comment-profile-img" src="${commentUser.image || 'https://www.gravatar.com/avatar/?d=mp'}" alt="Profile picture of comment author.">
+                                        <div>
+                                            <p class="username" data-userid="${comment.user.id}">${commentUser.username}</p>
+                                            <p>${comment.body}</p>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')
+                            : `
+                                <div class="comment-null">
                                     <p>No comments yet!</p>
-                                </div>
-                                `
-                        }
+                            </div>
+                        `}
                     </div>
                 `;
     
