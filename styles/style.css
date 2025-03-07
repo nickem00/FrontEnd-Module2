@@ -159,6 +159,10 @@ main {
     color: #fd6b36;
 }
 
+#information-section ul li a:hover {
+    text-decoration: underline;
+}
+
 #information-section h2 {
     font-size: 2rem;
 }
@@ -415,6 +419,24 @@ main {
     align-self: center;
     background-color: var(--main-white-color);
     box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* ==== Footer ==== */
+footer {
+    border-top: 1px solid var(--border-color);
+    padding: 1rem;
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+}
+
+footer a {
+    text-decoration: none;
+    color: var(--accent-color);
+}
+
+footer a:hover {
+    text-decoration: underline;
 }
 
 /* ==== Animations ==== */
