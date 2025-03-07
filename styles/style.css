@@ -38,6 +38,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
     text-decoration: none;
+    font-size: 1.3rem;
     font-weight: bold;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -50,11 +51,29 @@ body {
 
 /* ===== Header ===== */
 header {
-    display: flex;
+    /* display: flex; */
     padding: 1rem;
-    justify-content: space-between;
-    align-items: center;
+    /* justify-content: space-between; */
+    /* align-items: center; */
     border-bottom: 1px solid #bbbbbb;
+}
+
+header div {
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+    justify-content: space-between;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(-3px);
+    transition: width 0.5s ease, opacity 0.5s ease, transform 0.5s ease;
+}
+
+
+
+.header-loaded {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 #header-title {
@@ -88,6 +107,8 @@ main {
     flex: 1;
 }
 
+/* ==== Index/Main ==== */
+
 .hero h2 {
     font-size: 2.5rem;
     margin-bottom: 1rem;
@@ -102,6 +123,44 @@ main {
     display: flex;
     gap: 1rem;
     margin-top: 1rem;
+}
+
+#information-section {
+    margin: 4rem 20px 0 0;
+    transition: margin 0.3s ease;
+}
+
+
+#information-section ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+}
+
+#information-section ul li {
+    list-style-type: none;
+    /* box-shadow: 0 0 4px rgba(0, 0, 0, 0.1); */
+    /* border: 1px solid var(--border-color); */
+    padding: 0.2rem;
+    border-radius: 4px;
+    font-size: 1.3rem;
+    max-width: fit-content;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#information-section ul li:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+#information-section ul li a {
+    text-decoration: none;
+    color: #fd6b36;
+}
+
+#information-section h2 {
+    font-size: 2rem;
 }
 
 /* Contact Page */
@@ -372,4 +431,35 @@ main {
 
 .fade-fall {
     animation: fadeFall 0.5s ease-out forwards;
+}
+
+/* Media */
+@media (min-width: 725px) {
+    .posts-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    #information-section {
+        margin: 4rem 0 0 calc(100% - 25rem);
+    }
+}
+
+@media (min-width: 970px) {
+    .hero {
+        margin-left: 5rem;
+        transition: margin 0.3s ease;
+    }
+    #information-section {
+        margin: 4rem 0 0 calc(100% - 30rem);
+    }
+
+    header div {
+        width: 90%;
+    }
+}
+
+@media (min-width: 1250px) {
+    .posts-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
 }
