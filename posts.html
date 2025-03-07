@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatter - Posts</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <script src="scripts/posts.js" defer></script>
+    <script src="scripts/common.js" defer></script>
+</head>
+<body>
+    
+    <header>
+        
+        <h1 id="header-title">Chatter</h1>
+        
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="posts.html">Posts</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    
+    </header>
+
+    <main>
+        <section class="posts-grid" id="posts-container">
+
+        </section>
+
+        <div id="sentinel"></div>
+        <div id="scroll-spacer"></div>
+
+        <div id="user-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="modal-username"></h2>
+                <p><strong>Email:</strong> <span id="modal-email"></span></p>
+                <p><strong>Address:</strong> <span id="modal-address"></span></p>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
