@@ -357,6 +357,13 @@ main {
     cursor: pointer;
 }
 
+.profile-img {
+    border-radius: 50%;
+    max-width: 50%;
+    align-self: center;
+    background-color: var(--main-white-color);
+}
+
 /* ==== Animations ==== */
 @keyframes fadeFall {
     0% {

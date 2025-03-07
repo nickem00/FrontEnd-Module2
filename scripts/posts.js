@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // Modal
     const userModal = document.getElementById("user-modal")
+    const modalProfileImg = document.getElementById("profile-img")
+    const modalName = document.getElementById("modal-name")
     const modalUsername = document.getElementById("modal-username")
     const modalEmail = document.getElementById("modal-email")
     const modalAddress = document.getElementById("modal-address")
@@ -71,7 +73,9 @@ document.addEventListener("DOMContentLoaded", async function() {
                     return;
                 }
 
+                modalProfileImg.src = `${user.image}`
                 modalUsername.innerText = `@${user.username}`;
+                modalName.innerText = `${user.firstName.concat(" ", user.lastName)}`;
                 modalEmail.innerText = user.email;
                 modalAddress.innerText = `${user.address.city}, ${user.address.state}`;
 
