@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const userModal = document.getElementById("user-modal")
     const modalProfileImg = document.getElementById("profile-img")
     const modalName = document.getElementById("modal-name")
+    const modalJobTitle = document.getElementById("modal-job-title")
     const modalUsername = document.getElementById("modal-username")
     const modalEmail = document.getElementById("modal-email")
     const modalAddress = document.getElementById("modal-address")
@@ -76,6 +77,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 modalProfileImg.src = `${user.image  || 'https://www.gravatar.com/avatar/?d=mp'}`
                 modalUsername.innerText = `@${user.username}`;
                 modalName.innerText = `${user.firstName.concat(" ", user.lastName)}`;
+                modalJobTitle.innerText = `${user.company.title}`
                 modalEmail.innerText = user.email;
                 modalAddress.innerText = `${user.address.city}, ${user.address.state}`;
 
