@@ -455,6 +455,21 @@ footer a:hover {
     animation: fadeFall 0.5s ease-out forwards;
 }
 
+@keyframes fadeRise {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-rise {
+    animation: fadeRise 0.5s ease-out forwards;
+}
+
 /* Media */
 @media (min-width: 725px) {
     .posts-grid {

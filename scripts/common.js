@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const hero = document.querySelector(".hero");
     const contactForm = document.querySelector(".contact-form-container")
     const informationSection = document.getElementById("information-section")
+    const footer = document.querySelector("footer")
 
     if (header) {
         setTimeout(() => {
@@ -26,6 +27,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (informationSection) {
         setTimeout(() => {
             informationSection.classList.add("fade-fall")
+        }, 50)
+    }
+
+    if (footer) {
+        setTimeout(() => {
+            footer.classList.add("fade-rise")
         }, 50)
     }
     
