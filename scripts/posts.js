@@ -41,9 +41,12 @@ document.addEventListener("DOMContentLoaded", async function() {
     // Observer for "<div id="sentinel"></div>" in posts.html
     // Used for "infinite scrolling" effect
     const observer = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting) {
+        if (entries[0].isIntersecting && !isLoading) {
+            observer.unobserve(sentinel)
             currentPage++;
-            loadPosts(currentPage);
+            loadPosts(currentPage).then(() => {
+                observer.observe(sentinel);
+            })
         }
     }, {
         rootMargin: '0px 0px -100px 0px' // Load posts 100px before reaching the sentinel
@@ -93,9 +96,16 @@ async function loadPosts(page) {
     isLoading = true;
 
     try {
+        let limit, skip;
+        if (page === 1) {
+            limit = 6;
+            skip = 0;
+        } else {
+            limit = 3;
+            skip = 6 + (page - 2) * 3;
+        }
         console.log(`Loading posts for page: ${page}`)
-        const skip = (page - 1) * 3; // Load 3 posts at a time
-        const response = await fetch(`https://dummyjson.com/posts?limit=3&skip=${skip}`);
+        const response = await fetch(`https://dummyjson.com/posts?limit=${limit}&skip=${skip}`);
         const postsData = await response.json();
 
         postsData.posts.forEach(post => {
