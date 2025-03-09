@@ -1,6 +1,17 @@
+// Global variables
+let users = {};
+let comments = {};
+let postsContainer;
+let currentPage = 1;
+let isLoading = false;
+
+
 document.addEventListener("DOMContentLoaded", async function() {
+    console.log("DOM loaded, fetching users and comments.");
+    
     // === Elements ===
-    const postsContainer = document.getElementById("posts-container")
+    // Posts Container
+    postsContainer = document.getElementById("posts-container")
 
     // Modal
     const userModal = document.getElementById("user-modal")
@@ -14,42 +25,18 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // Infinite Scroll
     const sentinel = document.getElementById("sentinel");
-    
     // ===================================================
 
     // === Fetching & Creating posts ===
-    // Fetch users first
-    let users;
-    try {
-        // Limit set to include all users.
-        let usersResponse = await fetch("https://dummyjson.com/users?limit=208"); 
-        let usersData = await usersResponse.json(); // Convert to json
-        users = usersData.users.reduce((acc, user) => {
-            acc[user.id] = user;  // Convert array of users to an object with user IDs as keys
-            return acc;
-        }, {});
-    } catch (error) {
-        console.log("Error while getting user data:", error)
-        displayError(`There was an error loading posts. Try refreshing the page.`)
-        return;
+    // Fetch users and comments first to ensure correct loading
+    const isDataLoaded = await fetchUsersAndComments();
+    if (isDataLoaded) {
+        console.log("Users and comment successfully loaded. Now fetching posts..")
+        loadPosts(1);
+    } else {
+        console.log("Failed to load users/comments, skipping posts loading.");
     }
-
-    let comments;
-    try {
-        let commentsResponse = await fetch("https://dummyjson.com/comments?limit=0");
-        let commentsData = await commentsResponse.json()
-        // Assuming commentsData is an array of comment objects fetched from dummyjson.com
-        comments = commentsData.comments.reduce((acc, comment) => {
-            acc[comment.id] = comment;
-            return acc;
-        }, {});
-    } catch (error) {
-        console.log("Error while fetching comments:", error);
-    }
-
-    //
-    let currentPage = 1;
-    loadPosts(currentPage);
+    
 
     // Observer for "<div id="sentinel"></div>" in posts.html
     // Used for "infinite scrolling" effect
@@ -61,7 +48,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     }, {
         rootMargin: '0px 0px -100px 0px'
     });
-
     observer.observe(sentinel);
 
     // Modal user view
@@ -94,79 +80,138 @@ document.addEventListener("DOMContentLoaded", async function() {
     } catch (error) {
         console.log("Error while constructing modal user view", error)
     }
+});
 
-    // ======================================================
 
-    // === Functions ===
-    async function loadPosts(page) {
-        try {
-            const skip = (page - 1) * 3; // Load 3 posts at a time
-            const response = await fetch(`https://dummyjson.com/posts?limit=3&skip=${skip}`);
-            const postsData = await response.json();
+// === Functions ===
+/**
+ * Fetches posts from the API an displays them using displayPosts()
+ * @param {number} page - Page number for fetching next posts
+ */
+async function loadPosts(page) {
+    if (isLoading) return;
+    isLoading = true;
 
-            postsData.posts.forEach(post => {
-                const postElement = document.createElement("article")
-                postElement.classList.add("post", "fade-fall");
+    try {
+        console.log(`Loading posts for page: ${page}`)
+        const skip = (page - 1) * 3; // Load 3 posts at a time
+        const response = await fetch(`https://dummyjson.com/posts?limit=3&skip=${skip}`);
+        const postsData = await response.json();
+
+        postsData.posts.forEach(post => {
+            displayPosts(post);
+        });
+
+    } catch (error) {
+        console.log("Error while fetching posts data:", error);
+        displayError(`There was an error loading posts. Try refreshing the page.`)
+    } finally {
+        isLoading = false;
+    }
+}
+
+/**
+ * Displays an error message on the page
+ * @param {string} message - The message to be shown
+ */
+function displayError(message) {
+    const mainSection = document.querySelector("main");
+    const errorDiv = document.createElement("div");
+    errorDiv.classList.add("error-notif")
+    mainSection.innerHTML = "";
+
+    errorDiv.innerHTML = `
+        <p class="posts-error-msg">${message}</p>
+    `;
+    mainSection.appendChild(errorDiv);
+}
+
+/**
+ * Fetches users and comments from the API.
+ * If all goes well, it returns true, else false.
+ * @returns {Promise<boolean>}
+ */
+async function fetchUsersAndComments() {
+    try {
+        // Fetch all users
+        // Limit set to include all users.
+        let usersResponse = await fetch("https://dummyjson.com/users?limit=208"); 
+        let usersData = await usersResponse.json(); // Convert to json
+        users = usersData.users.reduce((acc, user) => {
+            acc[user.id] = user;  // Convert array of users to an object with user IDs as keys
+            return acc;
+        }, {});
+    } catch (error) {
+        console.log("Error while getting user data:", error)
+        displayError(`There was an error fetching user data. Try refreshing the page.`)
+        return false;
+    }
     
-                let user = users[post.userId] || {username: "Unknown user", email: "N/A", address: { city: "N/A", state: "N/A" } };
-    
-                const postComments = Object.values(comments).filter(comment => comment.postId === post.id);
-    
-                postElement.innerHTML = `
-                    <div class="post-author">
-                        <img class="comment-profile-img" src="${user.image}" alt="Profile image of post author.">
-                        <a href="#" class="username" data-userid="${post.userId}">@${user.username}</a>
-                    </div>
-                    <h2>${post.title}</h2>
-                    <p class="post-body">${post.body}</p>
-                    <div class="tags-react-grid">
-                        <p><strong>Tags:</strong> ${post.tags.map(tag => `#${tag}`).join(' ')}</p>
-                        <div class="reactions">
-                            <p><i class="fa-solid fa-thumbs-up" style="color: var(--accent-color);"></i> ${post.reactions.likes}</p>
-                            <p><i class="fa-solid fa-thumbs-down"></i> ${post.reactions.dislikes}</p>
-                        </div>
-                    </div>
-                    <p class="comments-title"><strong>Comments</strong></p>
-                    <div class="comments-div">
-                        ${postComments.length ?
-                            postComments.map(comment => {
-                                const commentUser = users[comment.user.id] || { username: "Unknown user" };
-                                return `
-                                    <div class="comment">
-                                        <img class="comment-profile-img" src="${commentUser.image || 'https://www.gravatar.com/avatar/?d=mp'}" alt="Profile picture of comment author.">
-                                        <div>
-                                            <p class="username" data-userid="${comment.user.id}">${commentUser.username}</p>
-                                            <p>${comment.body}</p>
-                                        </div>
-                                    </div>
-                                `;
-                            }).join('')
-                            : `
-                                <div class="comment-null">
-                                    <p>No comments yet!</p>
+
+    try {
+        // Fetch all comments.
+        let commentsResponse = await fetch("https://dummyjson.com/comments?limit=0");
+        let commentsData = await commentsResponse.json()
+        comments = commentsData.comments.reduce((acc, comment) => {
+            acc[comment.id] = comment; // Convert array of comment to an object with comment IDs as keys
+            return acc;
+        }, {});
+    } catch (error) {
+        console.log("Error while fetching comments:", error);
+        alert("Error while fetching comments. Try reloading the page.")
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Creates an HTML-element for a post and adds it to the DOM
+ * @param {object} post - The object with data for the post
+ */
+async function displayPosts(post) {
+    const postElement = document.createElement("article")
+    postElement.classList.add("post", "fade-fall");
+    let user = users[post.userId] || {username: "Unknown user", email: "N/A", address: { city: "N/A", state: "N/A" } };
+
+    const postComments = Object.values(comments).filter(comment => comment.postId === post.id);
+
+    postElement.innerHTML = `
+        <div class="post-author">
+            <img class="comment-profile-img" src="${user.image}" alt="Profile image of post author.">
+            <a href="#" class="username" data-userid="${post.userId}">@${user.username}</a>
+        </div>
+        <h2>${post.title}</h2>
+        <p class="post-body">${post.body}</p>
+        <div class="tags-react-grid">
+            <p><strong>Tags:</strong> ${post.tags.map(tag => `#${tag}`).join(' ')}</p>
+            <div class="reactions">
+                <p><i class="fa-solid fa-thumbs-up" style="color: var(--accent-color);"></i> ${post.reactions.likes}</p>
+                <p><i class="fa-solid fa-thumbs-down"></i> ${post.reactions.dislikes}</p>
+            </div>
+        </div>
+        <p class="comments-title"><strong>Comments</strong></p>
+        <div class="comments-div">
+            ${postComments.length ?
+                postComments.map(comment => {
+                    const commentUser = users[comment.user.id] || { username: "Unknown user" };
+                    return `
+                        <div class="comment">
+                            <img class="comment-profile-img" src="${commentUser.image || 'https://www.gravatar.com/avatar/?d=mp'}" alt="Profile picture of comment author.">
+                            <div>
+                                <p class="username" data-userid="${comment.user.id}">${commentUser.username}</p>
+                                <p>${comment.body}</p>
                             </div>
-                        `}
-                    </div>
-                `;
-    
-                postsContainer.appendChild(postElement);
-            });
-        } catch (error) {
-            console.log("Error while fetching posts data:", error);
+                        </div>
+                    `;
+                }).join('')
+                : `
+                    <div class="comment-null">
+                        <p>No comments yet!</p>
+                </div>
+            `}
+        </div>
+    `;
 
-            
-        }
-    }
-
-    function displayError(message) {
-        const mainSection = document.querySelector("main");
-        const errorDiv = document.createElement("div");
-        errorDiv.classList.add("error-notif")
-        mainSection.innerHTML = "";
-
-        errorDiv.innerHTML = `
-            <p class="posts-error-msg">${message}</p>
-        `;
-        mainSection.appendChild(errorDiv);
-    }
-})
+    postsContainer.appendChild(postElement);
+}
