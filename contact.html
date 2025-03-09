@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatter - Contact</title>
+    <link rel="icon" href="assets/favicon-white.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles/style.css">
     <script src="scripts/contact.js" defer></script>
     <script src="scripts/common.js" defer></script>
@@ -29,18 +30,18 @@
     <main>
 
         <section class="contact-form-container">
-            <h1>Contact us</h1>
+            <h2>Contact us</h2>
             <form id="contact-form">
                 
                 <div class="contact-grid">
                     <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required>
+                    <input type="text" id="name" name="name" title="Enter first name and/or last name." required>
                 </div>
                 <span class="error-message" id="name-error"><p></p></span>
 
                 <div class="contact-grid">
                     <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
+                    <input type="email" id="email" name="email" title="Enter a valid email." required>
                 </div>
                 <span class="error-message" id="email-error"><p></p></span>
                 

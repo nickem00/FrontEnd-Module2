@@ -21,14 +21,17 @@ document.addEventListener("DOMContentLoaded", async function() {
     // Fetch users first
     let users;
     try {
-        let usersResponse = await fetch("https://dummyjson.com/users?limit=208");
-        let usersData = await usersResponse.json();
+        // Limit set to include all users.
+        let usersResponse = await fetch("https://dummyjson.com/users?limit=208"); 
+        let usersData = await usersResponse.json(); // Convert to json
         users = usersData.users.reduce((acc, user) => {
-            acc[user.id] = user;
+            acc[user.id] = user;  // Convert array of users to an object with user IDs as keys
             return acc;
         }, {});
     } catch (error) {
         console.log("Error while getting user data:", error)
+        displayError(`There was an error loading posts. Try refreshing the page.`)
+        return;
     }
 
     let comments;
@@ -111,7 +114,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     
                 postElement.innerHTML = `
                     <div class="post-author">
-                        <img class="comment-profile-img" src="${user.image} alt="Profile image of post author.">
+                        <img class="comment-profile-img" src="${user.image}" alt="Profile image of post author.">
                         <a href="#" class="username" data-userid="${post.userId}">@${user.username}</a>
                     </div>
                     <h2>${post.title}</h2>
@@ -150,7 +153,20 @@ document.addEventListener("DOMContentLoaded", async function() {
             });
         } catch (error) {
             console.log("Error while fetching posts data:", error);
+
             
         }
-    } 
+    }
+
+    function displayError(message) {
+        const mainSection = document.querySelector("main");
+        const errorDiv = document.createElement("div");
+        errorDiv.classList.add("error-notif")
+        mainSection.innerHTML = "";
+
+        errorDiv.innerHTML = `
+            <p class="posts-error-msg">${message}</p>
+        `;
+        mainSection.appendChild(errorDiv);
+    }
 })
