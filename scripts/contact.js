@@ -1,3 +1,7 @@
+/**
+ * Contact Page Form Validation
+ */
+
 document.addEventListener("DOMContentLoaded", function() {
     // Resetting after reload
     document.getElementById("contact-form").reset();
@@ -17,16 +21,17 @@ document.addEventListener("DOMContentLoaded", function() {
     const emailError = document.querySelector("#email-error p");
     const confirmError = document.querySelector("#confirm-error p");
 
-    // Checking variables
-    const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/ // Special characters
+    // Regex for validation. Regex is a pattern matching language used for strings.
+    const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/ // Special characters - !@#$%^&*()_+-=[]{};':"\\|,.<>/?
     const hasNumber = /\d/; // Numbers
-    const isEmail = /^$|^\S+@\S+\.\S+$/; // Email
+    const isEmail = /^$|^\S+@\S+\.\S+$/; // Email - [string]@[string].[string]
 
     let nameValid = false;
     let emailValid = false;
     let confirmValid = false;
 
-    // Event Listeners
+    // --- Event Listeners ---
+    // Validating the name input
     nameInput.addEventListener("input", function() {
         let currentValue = nameInput.value.trim();
         nameValid = !(hasNumber.test(currentValue) || hasSymbol.test(currentValue));
@@ -42,6 +47,8 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     })
 
+    // Validating the email input
+    // Ensuring the email follows "[string]@[string].[string]"
     emailInput.addEventListener("input", function() {
         let currentValue = emailInput.value.trim();
         emailValid = (isEmail.test(currentValue));
@@ -57,6 +64,9 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     })
 
+    // Validating the confirm checkbox
+    // Ensuring the name and email fields are not empty,
+    // and that they are valid.
     checkbox.addEventListener("change", function() {
         if (!checkbox.checked) {
             removeError("confirm");
@@ -99,9 +109,12 @@ document.addEventListener("DOMContentLoaded", function() {
         form.reset();
     })
     
-
-
     // === Functions ===
+    
+    /**
+     * Displays an error message for the specified field
+     * @param {string} field - What field the error is for.
+     */
     function displayError(field) {
         switch (field) {
             case "name":
@@ -125,6 +138,10 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    /**
+     * Removes the error message for the specified field
+     * @param {string} field - What field to be removed.
+     */
     function removeError(field) {
         switch (field) {
             case "name":
@@ -141,6 +158,9 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    /**
+     * Checks if all fields are valid and enables the submit button
+     */
     function checkFormValidity() {
         if (nameValid && emailValid && confirmValid) {
             removeError("confirm");
@@ -152,6 +172,11 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    /**
+     * Checks if a string is empty
+     * @param {string} string - The string to be checked
+     * @returns {boolean} - True if the string is not empty, false otherwise
+     */
     function isNotEmpty(string) {
         if (string) {
             return true;

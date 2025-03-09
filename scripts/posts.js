@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             loadPosts(currentPage);
         }
     }, {
-        rootMargin: '0px 0px -100px 0px'
+        rootMargin: '0px 0px -100px 0px' // Load posts 100px before reaching the sentinel
     });
     observer.observe(sentinel);
 
@@ -174,6 +174,7 @@ async function displayPosts(post) {
     postElement.classList.add("post", "fade-fall");
     let user = users[post.userId] || {username: "Unknown user", email: "N/A", address: { city: "N/A", state: "N/A" } };
 
+    // Filter comments tied to the current post
     const postComments = Object.values(comments).filter(comment => comment.postId === post.id);
 
     postElement.innerHTML = `

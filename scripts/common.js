@@ -1,3 +1,6 @@
+// This file is for code that affects all pages, such as
+// animations and marking the current page as active.
+
 document.addEventListener('DOMContentLoaded', function() {
     // Elements
     const header = document.querySelector("header div");
@@ -6,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const informationSection = document.getElementById("information-section")
     const footer = document.querySelector("footer")
 
+    // Apply animations. Timeout is used to ensure the animations
+    // are applied after the page has loaded.
     if (header) {
         setTimeout(() => {
             header.classList.add("header-loaded")
@@ -37,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     
-    
+    // Marking the current page as active in the navigation
     const currentPage = window.location.pathname.split("/").pop();
     document.querySelectorAll(".nav-links a").forEach(link => {
         if (link.getAttribute("href") === currentPage) {
